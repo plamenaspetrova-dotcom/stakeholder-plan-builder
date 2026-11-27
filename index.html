@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Stakeholder Plan Builder</title>
+<meta name="description" content="Free tool for project managers: answer four questions and get a stakeholder engagement plan and communication plan, with a PDF your sponsor can sign.">
+<meta property="og:title" content="Stakeholder Plan Builder">
+<meta property="og:description" content="Free tool for project managers: answer four questions and get a stakeholder engagement plan and communication plan, with a PDF your sponsor can sign.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e2a3b'/%3E%3Ccircle cx='11' cy='12' r='4' fill='%236ad8c8'/%3E%3Ccircle cx='21' cy='12' r='4' fill='%23ffffff'/%3E%3Ccircle cx='16' cy='21' r='4' fill='%236ad8c8'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky step bar over a single working column; the finished plan renders as a paper document. Identity: petrol blue, cool grey, teal accent; Manrope headings, IBM Plex Sans text */
+:root{
+  --bg:#f1f4f6; --surface:#ffffff; --sunk:#e6ecef; --fg:#0f2433; --muted:#4f6472; --line:#d6dfe5;
+  --navy:#0e2a3b; --on-navy:#e6f0f3; --hero-sub:#a9c2cc; --hero-accent:#6ad8c8;
+  --accent:#0b7a72; --accent-soft:#d8efec; --accent-ink:#06574f;
+  --ok:#2d7a3e; --ok-soft:#e1f0e3; --warn:#9a6300; --warn-soft:#f7ecd5; --bad:#b0372f; --bad-soft:#f7e0dd;
+  --push:#3b4f99; --push-soft:#e4e8f6;
+  --font:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
+  --display:"Manrope","IBM Plex Sans","Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a1820; --surface:#10232e; --sunk:#0d1d26; --fg:#e3eef2; --muted:#93a9b5; --line:#1f3846;
+  --navy:#06121a; --on-navy:#e3eef2; --hero-sub:#93a9b5; --hero-accent:#6ad8c8;
+  --accent:#3cc1b1; --accent-soft:#103a37; --accent-ink:#77dccf;
+  --ok:#62c47a; --ok-soft:#15321d; --warn:#e2b04f; --warn-soft:#33270f; --bad:#ef8278; --bad-soft:#3a1d1a;
+  --push:#a7b6f0; --push-soft:#1c2547; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a1820; --surface:#10232e; --sunk:#0d1d26; --fg:#e3eef2; --muted:#93a9b5; --line:#1f3846;
+  --navy:#06121a; --on-navy:#e3eef2; --hero-sub:#93a9b5; --hero-accent:#6ad8c8;
+  --accent:#3cc1b1; --accent-soft:#103a37; --accent-ink:#77dccf;
+  --ok:#62c47a; --ok-soft:#15321d; --warn:#e2b04f; --warn-soft:#33270f; --bad:#ef8278; --bad-soft:#3a1d1a;
+  --push:#a7b6f0; --push-soft:#1c2547; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.55}
+@media (min-width:1500px){body{font-size:16px}}
+@media (min-width:2200px){body{font-size:17px}}
+.wrap{max-width:min(1200px,92vw);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+h1,h2,h3,h4{margin:0;line-height:1.2;text-wrap:balance;letter-spacing:-.01em;font-family:var(--display)}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* hero */
+.hero{background:var(--navy);color:var(--on-navy)}
+.hero .in{max-width:min(1200px,92vw);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:34px 30px;display:grid;gap:10px}
+.eyebrow{font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.hero .eyebrow{color:var(--hero-accent)}
+.hero h1{font-size:clamp(1.7rem,4vw,2.5rem);font-weight:800;letter-spacing:-.02em;max-width:22ch}
+.hero p{color:var(--hero-sub);max-width:62ch}
+.bar-acc{width:56px;height:6px;border-radius:3px;background:var(--hero-accent)}
+
+/* steps */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav.steps{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.steps .in{max-width:min(1200px,92vw);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;gap:4px;overflow-x:auto;padding-block:10px}
+nav.steps a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--muted);font-weight:600;padding:7px 12px 7px 8px;border-radius:999px;white-space:nowrap;font-size:.92rem}
+nav.steps a b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sunk);font-size:.78rem}
+nav.steps a[aria-current="true"]{background:var(--surface);color:var(--fg);box-shadow:0 0 0 1px var(--line)}
+nav.steps a[aria-current="true"] b{background:var(--accent);color:#fff}
+
+section.view{display:grid;gap:18px;padding-top:24px}
+.head{display:flex;flex-wrap:wrap;gap:12px;align-items:end;justify-content:space-between}
+.head h2{font-size:1.45rem;font-weight:800}
+.head p{color:var(--muted);max-width:62ch;margin-top:4px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+.field{display:grid;gap:5px;min-width:0}
+.field label,.lab{font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.field small{color:var(--muted);font-size:.8rem}
+input[type=text],input[type=date],select,textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 11px;font-size:.95rem}
+textarea{resize:vertical;min-height:70px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;font-weight:600;font-size:.9rem;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.btn:hover{background:var(--sunk)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.08);background:var(--accent)}
+.btn[disabled]{opacity:.6;cursor:progress}
+.dark-btn{background:var(--navy)!important;border-color:var(--navy)!important;color:var(--on-navy)!important}
+.btn.ghost{border-color:transparent;background:none;color:var(--muted)}
+.btn.danger{color:var(--bad)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.next{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:6px}
+.note{font-size:.86rem;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:var(--on-navy);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--bad-soft);border-radius:10px;padding:10px 12px;font-size:.9rem}
+
+/* stakeholders */
+.slayout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+@media (max-width:900px){.slayout{grid-template-columns:1fr}}
+.scards{display:grid;gap:12px}
+.scard{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--q,var(--line));border-radius:14px;padding:14px 16px;display:grid;gap:12px}
+.scard .top{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center}
+.scard .num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--on-navy);display:grid;place-items:center;font-weight:700;font-size:.8rem}
+.scard .name{font-weight:700;font-size:1rem;border:1px solid transparent;background:none;padding:6px 8px;border-radius:8px}
+.scard .name:hover,.scard .name:focus{border-color:var(--line);background:var(--surface)}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px}
+.range{display:grid;gap:4px}
+.range .v{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.chip.mc{background:var(--accent-soft);color:var(--accent-ink)}
+.chip.ks{background:var(--push-soft);color:var(--push)}
+.chip.ki{background:var(--ok-soft);color:var(--ok)}
+.chip.hi{background:var(--bad-soft);color:var(--bad)}
+.chip.me{background:var(--warn-soft);color:var(--warn)}
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 66px);display:grid;gap:12px}
+@media (max-width:900px){.side{position:static}}
+.suggest{display:flex;flex-wrap:wrap;gap:6px}
+.suggest button{border:1px dashed var(--line);background:none;border-radius:999px;padding:5px 11px;font-size:.82rem;cursor:pointer;color:var(--fg)}
+.suggest button:hover{border-color:var(--accent);color:var(--accent)}
+.svgbox svg{width:100%;height:auto;display:block}
+svg text{font-family:var(--font)}
+
+/* comms settings */
+.toggles{display:flex;flex-wrap:wrap;gap:8px}
+.tog{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:.9rem;background:var(--surface)}
+.tog input{accent-color:var(--accent)}
+
+/* document */
+.doctools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.doc{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:clamp(20px,5vw,56px);display:grid;gap:30px;box-shadow:0 10px 30px rgba(14,42,59,.07)}
+.doc .cover{display:grid;gap:10px;border-bottom:3px solid var(--fg);padding-bottom:22px}
+.doc .cover h1{font-size:clamp(1.6rem,4vw,2.3rem);font-weight:800;letter-spacing:-.02em}
+.doc .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:8px 22px;font-size:.88rem}
+.doc .meta div{display:grid}
+.doc .meta span{color:var(--muted);font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.doc .part{font-size:.78rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);padding-top:8px;border-top:1px solid var(--line)}
+.doc h2{font-size:1.5rem;font-weight:800;margin-top:-18px}
+.doc h3{font-size:1.08rem;font-weight:800;display:flex;gap:10px;align-items:baseline}
+.doc h3 .n{color:var(--accent);font-variant-numeric:tabular-nums}
+.doc .sec{display:grid;gap:10px}
+.doc p,.doc li{max-width:75ch}
+.doc ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table.t{border-collapse:collapse;width:100%;font-size:.86rem;min-width:620px}
+table.t th{background:var(--navy);color:var(--on-navy);text-align:left;font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;padding:9px 10px;font-weight:700}
+table.t td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+table.t td.b{font-weight:700}
+table.t tr:nth-child(even) td{background:color-mix(in srgb,var(--sunk) 45%,var(--surface))}
+.m{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.m.i{background:var(--accent-soft);color:var(--accent-ink)}.m.pu{background:var(--push-soft);color:var(--push)}.m.pl{background:var(--ok-soft);color:var(--ok)}
+.seam td.c{text-align:center;font-weight:800;width:13%}
+.seam td.gap{background:var(--accent-soft)!important}
+.dot{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;font-size:.75rem;font-weight:800}
+.dot.c{border:2px solid var(--fg)}.dot.d{background:var(--accent);color:#fff}
+.gridwrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.gridwrap{grid-template-columns:1fr}}
+.callout{background:var(--sunk);border-radius:10px;padding:12px 14px;font-size:.92rem}
+.callout b{color:var(--accent-ink)}
+.esc{display:grid;gap:8px}
+.esc div{display:grid;grid-template-columns:90px minmax(0,1fr);gap:12px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.esc b{color:var(--accent)}
+.sign{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px}
+.sign div{border-top:1px solid var(--fg);padding-top:8px;font-size:.85rem;color:var(--muted)}
+.foot{font-size:.8rem;color:var(--muted);text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){.btn,.scard,nav.steps a{transition:background .15s,border-color .15s}}
+
+/* v3 layout fixes */
+a.btn{text-decoration:none}
+.field{align-content:start}
+input[type=text],input[type=date],select{min-height:2.75em;line-height:1.3}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(20px,4vw,56px);align-items:center}
+.hero-copy{display:grid;gap:12px;align-content:start}
+.hero-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.hero-facts span{font-size:.82rem;font-weight:600;padding:4px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.22);color:var(--on-navy)}
+.hero-get{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px 20px}
+.hero-get .eyebrow{color:var(--hero-accent);margin-bottom:8px}
+.hero-get ol{margin:0;padding:0;list-style:none;counter-reset:g;display:grid;gap:7px}
+.hero-get li{counter-increment:g;display:grid;grid-template-columns:24px 1fr;gap:8px;color:var(--on-navy);font-size:.92rem;line-height:1.4}
+.hero-get li::before{content:counter(g);display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--hero-accent);color:var(--navy);font-size:.72rem;font-weight:700}
+@media (max-width:860px){.hero-grid{grid-template-columns:1fr}}
+</style>
+
+<header class="hero"><div class="in">
+  <div class="bar-acc"></div>
+  <div class="eyebrow">Free planning tool</div>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <h1>Build your stakeholder engagement and communication plans</h1>
+      <p>Describe your project, list the people involved, and get both plans written for you. Everything stays in your browser.</p>
+      <div class="hero-facts"><span>About 5 minutes</span><span>Free</span><span>PDF ready to sign</span></div>
+    </div>
+    <aside class="hero-get" aria-label="What you get">
+      <div class="eyebrow">What you get</div>
+      <ol>
+        <li>Stakeholder map (power and interest)</li>
+        <li>Engagement matrix: current vs desired support</li>
+        <li>A strategy for each stakeholder</li>
+        <li>How to influence the resistant ones</li>
+        <li>Communication matrix: what, who, how, when, owner</li>
+        <li>Meetings, escalation path and status report</li>
+        <li>A PDF your sponsor can review and sign</li>
+      </ol>
+    </aside>
+  </div>
+</div></header>
+
+<nav class="steps" aria-label="Steps"><div class="in">
+  <a href="#project" data-v="project"><b>1</b>Project</a>
+  <a href="#people" data-v="people"><b>2</b>Stakeholders</a>
+  <a href="#rhythm" data-v="rhythm"><b>3</b>Communication</a>
+  <a href="#plan" data-v="plan"><b>4</b>Your plans</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- 1 PROJECT -->
+<section class="view" id="v-project">
+  <div class="head"><div><h2>About the project</h2><p>An example project is loaded so you can see how it works. Replace it with yours, or start blank.</p></div>
+    <div class="row" id="resetRow"><button class="btn" id="loadEx">Load example</button><button class="btn ghost danger" id="askClear">Start blank</button></div></div>
+  <div class="panel">
+    <div class="grid2">
+      <div class="field"><label for="pName">Project name</label><input type="text" id="pName" data-p="name" placeholder="e.g. New CRM rollout"></div>
+      <div class="field"><label for="pType">Type of project</label><select id="pType" data-p="type"></select><small>Used to suggest stakeholders.</small></div>
+    </div>
+    <div class="field"><label for="pGoal">What is the project changing, and why?</label><textarea id="pGoal" data-p="goal" placeholder="One or two sentences. This becomes the purpose statement in both plans."></textarea></div>
+    <div class="grid2">
+      <div class="field"><label for="pOrg">Organization</label><input type="text" id="pOrg" data-p="org" placeholder="Company or department"></div>
+      <div class="field"><label for="pSponsor">Sponsor</label><input type="text" id="pSponsor" data-p="sponsor" placeholder="Who owns the outcome"></div>
+      <div class="field"><label for="pPM">Project manager</label><input type="text" id="pPM" data-p="pm" placeholder="Who runs the project"></div>
+      <div class="field"><label for="pStart">Start date</label><input type="date" id="pStart" data-p="start"></div>
+      <div class="field"><label for="pEnd">Go-live or end date</label><input type="date" id="pEnd" data-p="end"></div>
+    </div>
+  </div>
+  <div class="next"><span></span><a class="btn primary" href="#people">Next: stakeholders →</a></div>
+</section>
+
+<!-- 2 STAKEHOLDERS -->
+<section class="view" id="v-people" hidden>
+  <div class="head"><div><h2>Who is involved</h2><p>Add each person or group that is affected by the project or can affect it. Rate their power and interest, and where their support is today vs where you need it.</p></div></div>
+  <div class="slayout">
+    <div class="scards" id="scards"></div>
+    <aside class="side">
+      <div class="panel"><span class="lab">Add a stakeholder</span><div class="suggest" id="suggest"></div><button class="btn" id="addBlank">+ Add your own</button></div>
+      <div class="panel"><span class="lab">Live map</span><div class="svgbox" id="miniGrid"></div><p class="note">Top right gets the most attention. Drag the sliders and watch people move.</p></div>
+    </aside>
+  </div>
+  <div class="next"><a class="btn" href="#project">← Project</a><a class="btn primary" href="#rhythm">Next: communication →</a></div>
+</section>
+
+<!-- 3 COMMUNICATION SETTINGS -->
+<section class="view" id="v-rhythm" hidden>
+  <div class="head"><div><h2>How your organization communicates</h2><p>These settings shape the communication matrix, meetings and escalation path.</p></div></div>
+  <div class="panel">
+    <span class="lab">Channels you use</span>
+    <div class="toggles" id="tools"></div>
+    <div class="grid2">
+      <div class="field"><label for="cChat">Team chat tool</label><input type="text" id="cChat" data-c="chat" placeholder="e.g. Microsoft Teams, Slack"></div>
+      <div class="field"><label for="cHub">Where documents live</label><input type="text" id="cHub" data-c="hub" placeholder="e.g. SharePoint, Google Drive, Notion"></div>
+      <div class="field"><label for="cStatus">Status report</label><select id="cStatus" data-c="status"><option>Weekly</option><option>Every 2 weeks</option><option>Monthly</option></select></div>
+      <div class="field"><label for="cSteer">Steering meeting</label><select id="cSteer" data-c="steer"><option>Weekly</option><option>Every 2 weeks</option><option>Monthly</option></select></div>
+      <div class="field"><label for="cTeam">Project team check-in</label><select id="cTeam" data-c="team"><option>Daily stand-up (15 min)</option><option>3 times a week</option><option>Weekly</option></select></div>
+      <div class="field"><label for="cReview">Review this plan</label><select id="cReview" data-c="review"><option>Monthly</option><option>Every 2 weeks</option><option>At each phase gate</option></select></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="cE1">Team → PM escalation within</label><select id="cE1" data-c="e1"><option>4 working hours</option><option>1 working day</option><option>2 working days</option></select></div>
+      <div class="field"><label for="cE2">PM → sponsor escalation within</label><select id="cE2" data-c="e2"><option>1 working day</option><option>2 working days</option><option>1 week</option></select></div>
+    </div>
+  </div>
+  <div class="next"><a class="btn" href="#people">← Stakeholders</a><a class="btn primary" href="#plan">Generate my plans →</a></div>
+</section>
+
+<!-- 4 PLAN -->
+<section class="view" id="v-plan" hidden>
+  <div class="doctools">
+    <div><h2 style="font-size:1.45rem;font-weight:800">Your plans</h2><p class="note">Generated from your answers. Download a PDF to share, or copy into Word or Google Docs to edit.</p></div>
+    <div class="row"><button class="btn primary" id="dlPdf" type="button">Download PDF</button><button class="btn" id="copyRich" type="button">Copy for Word / Google Docs</button><button class="btn" id="copyText" type="button">Copy as plain text</button></div>
+  </div>
+  <article class="doc" id="doc"></article>
+  <p class="foot">Built on PMI stakeholder and communications management practice. Made by Plamena Petrova · Project &amp; Operations.</p>
+</section>
+</main>
+
+<script>
+// ---------- reference data ----------
+const LV=["Unaware","Resistant","Neutral","Supportive","Leading"];
+const CATS=["Sponsor / executive","Manager","Project team","End users / staff","Customers","Supplier / partner","Regulator / compliance","Community / public","Other"];
+const CHANS=["Email","Meetings","Team chat","Phone","Intranet / dashboard"];
+const TYPES={
+ software:{n:"Software or system rollout",s:[["Sponsor / executive","Sponsor",5,4,3,4],["Manager","Department managers",4,4,2,4],["Project team","IT team",3,5,3,3],["End users / staff","End users",2,4,0,3],["Regulator / compliance","Data protection lead",4,2,0,3],["Supplier / partner","Software vendor",2,4,3,3],["Customers","Customers",1,2,0,2]]},
+ process:{n:"Process or organizational change",s:[["Sponsor / executive","Sponsor",5,4,3,4],["Manager","Process owners",4,5,2,4],["End users / staff","Affected teams",2,5,1,3],["Manager","HR",4,3,2,3],["Customers","Customers",1,2,0,2]]},
+ office:{n:"Office move or refurbishment",s:[["Sponsor / executive","Sponsor",5,4,3,4],["Project team","Facilities team",3,5,3,3],["End users / staff","All staff",2,5,0,3],["Project team","IT team",3,4,2,3],["Supplier / partner","Movers and contractors",2,4,3,3],["Supplier / partner","Landlord / building management",4,2,2,3],["Customers","Visitors and clients",1,2,0,2]]},
+ launch:{n:"Product or service launch",s:[["Sponsor / executive","Sponsor",5,5,3,4],["Project team","Product team",3,5,3,4],["Manager","Marketing",4,4,3,3],["Manager","Sales",4,4,2,4],["End users / staff","Customer support",2,4,1,3],["Customers","Customers",3,3,0,3],["Supplier / partner","Partners and resellers",3,3,0,3]]},
+ construction:{n:"Construction or fit-out",s:[["Sponsor / executive","Client / owner",5,5,3,4],["Supplier / partner","Main contractor",4,5,3,3],["Supplier / partner","Subcontractors",2,4,2,3],["Project team","Design consultants",3,4,3,3],["Regulator / compliance","Local authority",5,2,2,3],["Community / public","Neighbours",2,3,1,2],["End users / staff","Future occupants",2,4,0,3],["Supplier / partner","Facilities management",3,3,0,3]]},
+ event:{n:"Event",s:[["Sponsor / executive","Sponsor",5,4,3,4],["Project team","Event team",3,5,3,4],["Supplier / partner","Venue",4,3,3,3],["Supplier / partner","Suppliers and caterers",2,3,3,3],["Other","Speakers",3,3,2,3],["Customers","Attendees",2,4,0,3]]},
+ other:{n:"Other",s:[["Sponsor / executive","Sponsor",5,4,3,4],["Project team","Project team",3,5,3,3],["End users / staff","Affected staff",2,4,0,3],["Customers","Customers",1,2,0,2]]}
+};
+const EXAMPLE={p:{name:"New CRM rollout",type:"software",goal:"Move sales and customer service from spreadsheets and the old contact system to one CRM, so every customer conversation is in one place and pipeline reporting is automatic.",org:"Example Co. (120 staff)",sponsor:"CEO",pm:"Project manager",start:"",end:""},
+ s:[["CEO (sponsor)","Sponsor / executive",5,4,3,4,"Is the team actually using it?","Meetings"],
+    ["Sales manager","Manager",4,5,1,4,"We'll lose deals while everyone learns a new system.","Meetings"],
+    ["Finance director","Manager",4,2,2,3,"What does it cost, and when do we see the return?","Email"],
+    ["IT lead","Project team",4,4,3,3,"Integrations and support load after go-live.","Team chat"],
+    ["Data protection lead","Regulator / compliance",4,2,0,3,"Is customer data moved and stored legally?","Email"],
+    ["Sales team","End users / staff",2,4,0,3,"More admin, less selling.","Team chat"],
+    ["Customer service","End users / staff",2,4,2,3,"Will customers notice anything during the switch?","Team chat"],
+    ["Customers","Customers",1,2,0,2,"","Email"]]};
+const DEFC={tools:{email:true,meet:true,chat:true,intranet:true,dash:false,video:true},chat:"Microsoft Teams",hub:"SharePoint",status:"Weekly",steer:"Every 2 weeks",team:"Daily stand-up (15 min)",review:"Monthly",e1:"1 working day",e2:"2 working days"};
+const TOOLS=[["email","Email"],["meet","Meetings / video calls"],["chat","Team chat"],["intranet","Intranet or shared hub"],["dash","Live dashboard"],["video","Short recorded videos"]];
+
+// ---------- state ----------
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const KEY="spb:v1";let uid=1;
+function iso(d){return d.toISOString().slice(0,10)}
+function exampleState(){const t=new Date();const st=new Date(t.getFullYear(),t.getMonth(),t.getDate()+7),en=new Date(st);en.setDate(en.getDate()+91);
+  const p={...EXAMPLE.p,start:iso(st),end:iso(en)};
+  return{p,c:JSON.parse(JSON.stringify(DEFC)),s:EXAMPLE.s.map(r=>({id:uid++,name:r[0],cat:r[1],pow:r[2],int:r[3],cur:r[4],des:r[5],concern:r[6],chan:r[7],owner:""}))}}
+function blankState(){return{p:{name:"",type:"other",goal:"",org:"",sponsor:"",pm:"",start:"",end:""},c:JSON.parse(JSON.stringify(DEFC)),s:[]}}
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+if(!S||!S.p||!Array.isArray(S.s))S=exampleState();else uid=Math.max(0,...S.s.map(x=>x.id||0))+1;
+let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},250)}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+
+// ---------- logic ----------
+const quad=x=>x.pow>=3?(x.int>=3?"mc":"ks"):(x.int>=3?"ki":"mo");
+const QN={mc:"Manage closely",ks:"Keep satisfied",ki:"Keep informed",mo:"Monitor"};
+const QCOL={mc:"var(--accent)",ks:"var(--push)",ki:"var(--ok)",mo:"var(--muted)"};
+const QAPP={mc:"Involve them in planning and key decisions. Meet regularly, consult before changes that affect them, and keep no surprises.",
+ ks:"Keep them confident with short, high-level updates. Consult them on decisions that touch their area, but don't overload them with detail.",
+ ki:"Keep them regularly updated, make help easy to find, and use them as an early-warning system for problems on the ground.",
+ mo:"Light-touch updates at key milestones. Watch for changes in their interest or influence and move them if it grows."};
+const prio=x=>{const g=x.des-x.cur;return(g>=2||x.cur==1&&g>0||(quad(x)=="mc"&&g>0))?"High":g==1?"Medium":"Low"};
+const CATTIP={"Sponsor / executive":"Keep messages to decisions, risks and benefits, on one page. Ask them to visibly back the project at key moments.",
+ "Manager":"Equip them to explain the change to their own teams: talking points, early previews, and answers to likely questions.",
+ "Project team":"Clear roles and priorities, short regular coordination, and visible recognition of progress.",
+ "End users / staff":"Explain what changes for them personally, train before go-live, and make support easy to reach. Use respected peers as champions.",
+ "Customers":"Tell them only what changes for them, early and in plain language, with a clear contact for questions.",
+ "Supplier / partner":"Agree named contacts, reporting and escalation routes at kickoff, and tie key updates to contract milestones.",
+ "Regulator / compliance":"Agree early what evidence they need and when. Build their review or sign-off into the schedule as a gate.",
+ "Community / public":"Notify in advance of anything that affects them, give a contact point, and follow up on complaints quickly.",
+ "Other":"Agree how and how often they want to hear from the project."};
+const STEP=["Make them aware: explain what is changing, why, and what it means for them, before they hear it elsewhere.",
+ "Find the real objection in a one-to-one conversation. Involve them in solving it and answer with evidence rather than argument.",
+ "Show what's in it for them, in their terms. Ask for their input on one real decision so they have a stake in the outcome.",
+ "Give them a visible role, such as champion, co-presenter or reviewer, and ask them to bring their peers along."];
+function strategy(x){const g=x.des-x.cur,a=[];
+  if(g>0){for(let l=x.cur;l<x.des&&l<4;l++)a.push(STEP[l])}
+  else if(g==0)a.push("Engagement is where it needs to be. Maintain it and check in at each plan review.");
+  else a.push("Engagement is above what's needed. Keep them involved, but avoid drawing on their time more than necessary.");
+  if(x.concern)a.push(`Address their main concern directly: “${x.concern}”`);
+  a.push(CATTIP[x.cat]||CATTIP.Other);return a}
+const tools=()=>S.c.tools;
+const pushCh=x=>{const t=tools();if(x&&x.chan=="Team chat"&&t.chat)return S.c.chat||"Team chat";if(t.email)return"Email";if(t.chat)return S.c.chat||"Team chat";return"Notice"};
+const pullCh=()=>tools().dash?"Project dashboard"+(tools().intranet?" and "+(S.c.hub||"shared hub"):""):tools().intranet?(S.c.hub||"Shared project hub"):"Shared folder";
+const meetCh=()=>tools().meet?"Meeting (in person or video)":"Meeting";
+const names=a=>a.length?a.map(x=>x.name||"Unnamed").join(", "):"";
+const fmtD=d=>{if(!d)return"";const x=new Date(d+"T00:00");return isNaN(x)?"":x.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"})};
+const addD=(d,n)=>{const x=new Date(d+"T00:00");x.setDate(x.getDate()+n);return iso(x)};
+
+function commItems(){const s=S.s,by=q=>s.filter(x=>quad(x)==q),cat=c=>s.filter(x=>x.cat==c);
+  const sp=S.p.sponsor||"Sponsor",pm=S.p.pm||"Project manager",items=[];
+  const steer=s.filter(x=>quad(x)=="mc"||(quad(x)=="ks"&&x.pow>=4));
+  const hi=s.filter(x=>prio(x)=="High");
+  const add=(what,purpose,aud,method,channel,freq,owner)=>{if(aud)items.push({what,purpose,aud,method,channel,freq,owner})};
+  add("Project kickoff","Why the project exists, goals, timeline, what changes for whom, and who to ask.","All stakeholders","i",meetCh(),"Once, at the start"+(S.p.start?" ("+fmtD(S.p.start)+")":""),sp);
+  add("Steering group meeting","Progress against plan, key risks and issues, decisions needed, approval of changes.",names(steer),"i",meetCh(),S.c.steer,pm);
+  add("Status report","Progress, milestones, RAG status, top risks and issues, decisions needed next.",names(by("mc")),"pu",pushCh(),S.c.status,pm);
+  add("Executive summary","One-page view of progress, cost, risks and any decision that touches their area.",names(by("ks")),"pu",tools().email?"Email":pushCh(),"Monthly, and before key decisions",pm);
+  add("One-to-one check-ins","Understand concerns, agree actions, and track movement toward the desired engagement level.",names(hi),"i",meetCh(),"Every 2 weeks until engaged",pm);
+  if(cat("Project team").length)add("Project team check-in","What was done, what's next, blockers.",names(cat("Project team")),"i",tools().meet?"Short meeting or call":"Meeting",S.c.team,pm);
+  add("Project update","What's happened, what's coming, what it means for them, where to get help.",names(by("ki")),"pu",tools().chat?(S.c.chat||"Team chat")+(tools().email?" or email":""):"Email","Every 2 weeks",pm);
+  if(tools().video)add("Short explainer video","Two-minute walkthrough of what changes for them and what to do.",names([...by("ki"),...cat("End users / staff").filter(x=>quad(x)!="ki")]),"pu","Recorded video","Before each major phase",pm);
+  const users=[...new Set([...cat("End users / staff"),...by("ki")])];
+  add("Q&A or demo session","Live walkthrough and open questions. Collect feedback and concerns.",names(users),"i",meetCh(),"Before each major phase","Project team");
+  add("Project hub","Plan, timeline, FAQ, guides, decisions log and contacts in one place.","All stakeholders","pl",pullCh(),"Always available, updated weekly",pm);
+  if(cat("Supplier / partner").length)add("Supplier coordination","Delivery status, dependencies, quality issues, upcoming needs.",names(cat("Supplier / partner")),"i",meetCh(),"Weekly",pm);
+  if(cat("Regulator / compliance").length)add("Compliance review","Evidence and approvals needed before the next gate.",names(cat("Regulator / compliance")),"i",meetCh(),"Before each decision gate",pm);
+  const ext=[...cat("Customers"),...cat("Community / public")];
+  if(ext.length)add("External notice","What changes for them, when, and who to contact.",names(ext),"pu",tools().email?"Email":"Notice","Ahead of any change that affects them",sp);
+  add("Milestone announcement","Celebrate progress and confirm what happens next.",names([...by("ki"),...by("mo")]),"pu",pushCh(),"At each major milestone",sp);
+  add("Go-live / launch announcement","It's live: what to do now and where to get help.","All stakeholders","pu",pushCh(),"At go-live"+(S.p.end?" ("+fmtD(S.p.end)+")":""),sp);
+  add("Lessons learned and close-out","What went well, what to change next time, thanks, handover to operations.",names([...new Set([...by("mc"),...cat("Project team")])]),"i",meetCh(),"At project close",pm);
+  return items}
+
+function phases(){const st=S.p.start,en=S.p.end;let dur=0;if(st&&en)dur=Math.round((new Date(en)-new Date(st))/864e5);
+  const at=f=>st&&dur>0?fmtD(addD(st,Math.round(dur*f))):"";
+  const hi=S.s.filter(x=>prio(x)=="High");const mc=S.s.filter(x=>quad(x)=="mc");
+  return[
+   ["Start",at(0)+(at(.1)?" – "+at(.1):""),["Confirm this stakeholder list and map with the sponsor","Hold the project kickoff",hi.length?"First one-to-ones with "+names(hi):"Agree relationship owners for each stakeholder"]],
+   ["Planning",at(.1)+(at(.3)?" – "+at(.3):""),[mc.length?"Consult "+names(mc)+" on scope and approach":"Consult key stakeholders on scope and approach","Agree this communication plan with the sponsor","Set up the project hub"]],
+   ["Delivery",at(.3)+(at(.85)?" – "+at(.85):""),["Run the regular updates, steering meetings and check-ins","Q&A and demo sessions before each phase","Reassess the engagement matrix ("+S.c.review.toLowerCase()+") and adjust"]],
+   ["Launch",at(.85)+(S.p.end?" – "+fmtD(S.p.end):""),["Training and support in place before go-live","External notices sent ahead of changes","Go-live announcement and visible sponsor message"]],
+   ["Close","After "+(S.p.end?fmtD(S.p.end):"go-live"),["Lessons learned session","Thank stakeholders and share results","Hand over communications to operations"]]]}
+
+// ---------- SVG grid ----------
+function gridSVG(big){const W=big?420:300,H=big?340:250,x0=30,y0=12,w=W-x0-10,h=H-y0-30;
+  const cx=v=>x0+(v-.5)/5*w,cy=v=>y0+h-(v-.5)/5*h;let s="";
+  const qs=[["Keep satisfied",x0,y0,"var(--sunk)"],["Manage closely",x0+w/2,y0,"var(--accent-soft)"],["Monitor",x0,y0+h/2,"var(--sunk)"],["Keep informed",x0+w/2,y0+h/2,"var(--sunk)"]];
+  // threshold at 3 → boundary at value 2.5
+  const bx=cx(2.5),by=cy(2.5);
+  s+=`<rect x="${x0}" y="${y0}" width="${bx-x0}" height="${by-y0}" fill="var(--sunk)"/><rect x="${bx}" y="${y0}" width="${x0+w-bx}" height="${by-y0}" fill="var(--accent-soft)"/><rect x="${x0}" y="${by}" width="${bx-x0}" height="${y0+h-by}" fill="var(--sunk)" opacity=".6"/><rect x="${bx}" y="${by}" width="${x0+w-bx}" height="${y0+h-by}" fill="var(--sunk)"/>`;
+  s+=`<text x="${x0+6}" y="${y0+14}" font-size="10" font-weight="700" fill="var(--muted)">Keep satisfied</text><text x="${x0+w-6}" y="${y0+14}" font-size="10" font-weight="700" fill="var(--accent-ink)" text-anchor="end">Manage closely</text><text x="${x0+6}" y="${y0+h-6}" font-size="10" font-weight="700" fill="var(--muted)">Monitor</text><text x="${x0+w-6}" y="${y0+h-6}" font-size="10" font-weight="700" fill="var(--muted)" text-anchor="end">Keep informed</text>`;
+  s+=`<text x="12" y="${y0+h/2}" font-size="10" font-weight="700" fill="var(--muted)" text-anchor="middle" transform="rotate(-90 12 ${y0+h/2})">POWER →</text><text x="${x0+w/2}" y="${H-8}" font-size="10" font-weight="700" fill="var(--muted)" text-anchor="middle">INTEREST →</text>`;
+  const seen={};S.s.forEach((x,i)=>{const k=x.pow+"-"+x.int,n=seen[k]=(seen[k]||0)+1;const ang=(n-1)*2.1,r=n>1?13:0;const px=cx(x.int)+Math.cos(ang)*r,py=cy(x.pow)+Math.sin(ang)*r;
+    s+=`<circle cx="${px}" cy="${py}" r="10" fill="${QCOL[quad(x)]}"/><text x="${px}" y="${py+3.5}" font-size="10" font-weight="800" fill="var(--surface)" text-anchor="middle">${i+1}</text>`});
+  return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Power interest grid">${s}</svg>`}
+
+// ---------- rendering: inputs ----------
+function fillProject(){$("#pType").innerHTML=Object.entries(TYPES).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join("");
+  $$("[data-p]").forEach(el=>el.value=S.p[el.dataset.p]||"");
+  $$("[data-c]").forEach(el=>el.value=S.c[el.dataset.c]||"");
+  $("#tools").innerHTML=TOOLS.map(([k,l])=>`<label class="tog"><input type="checkbox" id="tool-${k}" data-tool="${k}"${S.c.tools[k]?" checked":""}> ${l}</label>`).join("")}
+function opt(arr,v){return arr.map((o,i)=>`<option value="${typeof v=="number"?i:esc(o)}"${(typeof v=="number"?i===v:o===v)?" selected":""}>${esc(o)}</option>`).join("")}
+function drawCards(){const el=$("#scards");
+  if(!S.s.length){el.innerHTML=`<div class="panel"><b>No stakeholders yet.</b><p class="note">Use the suggestions on the right for your project type, or add your own. Most projects have 5–12 groups.</p></div>`;return}
+  el.innerHTML=S.s.map((x,i)=>{const q=quad(x),pr=prio(x);return`<div class="scard" style="--q:${QCOL[q]}" data-id="${x.id}">
+   <div class="top"><span class="num">${i+1}</span><input type="text" class="name" id="n-${x.id}" data-k="name" value="${esc(x.name)}" placeholder="Name or role" aria-label="Stakeholder name"><button class="btn ghost danger" data-del="${x.id}" aria-label="Remove ${esc(x.name)}">Remove</button></div>
+   <div class="chips"><span class="chip ${q}">${QN[q]}</span><span class="chip ${pr=="High"?"hi":pr=="Medium"?"me":""}">${pr} priority</span><span class="chip">${LV[x.cur]} → ${LV[x.des]}</span></div>
+   <div class="sgrid">
+    <div class="field"><label for="cat-${x.id}">Group</label><select id="cat-${x.id}" data-k="cat">${opt(CATS,x.cat)}</select></div>
+    <div class="range"><label class="lab" for="pow-${x.id}">Power</label><input type="range" min="1" max="5" id="pow-${x.id}" data-k="pow" value="${x.pow}"><div class="v"><span>Low</span><b>${x.pow}</b><span>High</span></div></div>
+    <div class="range"><label class="lab" for="int-${x.id}">Interest</label><input type="range" min="1" max="5" id="int-${x.id}" data-k="int" value="${x.int}"><div class="v"><span>Low</span><b>${x.int}</b><span>High</span></div></div>
+    <div class="field"><label for="cur-${x.id}">Support today</label><select id="cur-${x.id}" data-k="cur">${opt(LV,x.cur)}</select></div>
+    <div class="field"><label for="des-${x.id}">Support needed</label><select id="des-${x.id}" data-k="des">${opt(LV,x.des)}</select></div>
+    <div class="field"><label for="ch-${x.id}">Prefers</label><select id="ch-${x.id}" data-k="chan">${opt(CHANS,x.chan)}</select></div>
+   </div>
+   <div class="grid2"><div class="field"><label for="co-${x.id}">Main concern (optional)</label><input type="text" id="co-${x.id}" data-k="concern" value="${esc(x.concern)}" placeholder="In their words, e.g. “Will this slow us down?”"></div>
+   <div class="field"><label for="ow-${x.id}">Relationship owner</label><input type="text" id="ow-${x.id}" data-k="owner" value="${esc(x.owner)}" placeholder="${esc(S.p.pm||"Project manager")}"></div></div>
+  </div>`}).join("")}
+function drawSuggest(){const have=new Set(S.s.map(x=>x.name.toLowerCase()));const t=TYPES[S.p.type]||TYPES.other;
+  const list=t.s.filter(r=>!have.has(r[1].toLowerCase()));
+  $("#suggest").innerHTML=(list.length?list.map((r,i)=>`<button data-sug="${t.s.indexOf(r)}">+ ${esc(r[1])}</button>`).join(""):`<span class="note">All suggestions for "${esc(t.n)}" are added.</span>`)}
+function drawMini(){$("#miniGrid").innerHTML=gridSVG(false)}
+
+// ---------- rendering: document ----------
+function drawDoc(){const p=S.p,s=S.s,name=p.name||"Untitled project",pm=p.pm||"Project manager",sp=p.sponsor||"Sponsor",today=fmtD(iso(new Date()));
+  const n=s.length,chan=n*(n-1)/2,gaps=s.filter(x=>x.des>x.cur).sort((a,b)=>(b.des-b.cur)-(a.des-a.cur)),items=commItems();
+  const qOrder=["mc","ks","ki","mo"],byQ=q=>s.filter(x=>quad(x)==q);
+  let k=0;const H=t=>`<h3><span class="n">${++k}.</span>${t}</h3>`;
+  const seamRows=s.map(x=>`<tr><td class="b">${esc(x.name)}</td>${LV.map((_,l)=>{const inGap=l>Math.min(x.cur,x.des)&&l<Math.max(x.cur,x.des);const c=l==x.cur,d=l==x.des;return`<td class="c${inGap||d&&!c?" gap":""}">${c?'<span class="dot c">C</span>':""}${d?'<span class="dot d">D</span>':""}</td>`}).join("")}</tr>`).join("");
+  const empty=!n?`<div class="callout">Add stakeholders in step 2 to fill in the map, matrix, strategies and communication plan.</div>`:"";
+  let h=`<div class="cover"><div class="eyebrow">Project management plan · subsidiary plans</div><h1>${esc(name)}</h1><p style="color:var(--muted)">Stakeholder Engagement Plan and Communication Management Plan</p>
+   <div class="meta"><div><span>Organization</span>${esc(p.org||"–")}</div><div><span>Sponsor</span>${esc(sp)}</div><div><span>Prepared by</span>${esc(pm)}</div><div><span>Version</span>1.0 · ${today}</div>${p.start?`<div><span>Start</span>${fmtD(p.start)}</div>`:""}${p.end?`<div><span>Go-live / end</span>${fmtD(p.end)}</div>`:""}</div></div>`;
+  // PART A
+  h+=`<div class="part">Part A</div><h2>Stakeholder Engagement Plan</h2>`;
+  h+=`<div class="sec">${H("Purpose")}<p>${esc(p.goal||"Describe what the project changes and why.")}</p><p>This plan sets out who is affected by ${esc(name)} or can influence it, how engaged each group is today, the level of engagement the project needs, and the actions that will close the gap. It is reviewed ${esc(S.c.review.toLowerCase())} and whenever a new stakeholder appears or an engagement level changes.</p></div>`;
+  h+=`<div class="sec">${H("Stakeholder register")}${empty||`<div class="tw"><table class="t"><thead><tr><th>#</th><th>Stakeholder</th><th>Group</th><th>Power</th><th>Interest</th><th>Approach</th><th>Priority</th><th>Owner</th></tr></thead><tbody>${s.map((x,i)=>`<tr><td>${i+1}</td><td class="b">${esc(x.name)}</td><td>${esc(x.cat)}</td><td>${x.pow}/5</td><td>${x.int}/5</td><td>${QN[quad(x)]}</td><td>${prio(x)}</td><td>${esc(x.owner||pm)}</td></tr>`).join("")}</tbody></table></div>`}</div>`;
+  h+=`<div class="sec">${H("Power / interest map")}${empty||`<div class="gridwrap"><div class="svgbox">${gridSVG(true)}</div><div style="display:grid;gap:10px">${qOrder.map(q=>{const g=byQ(q);return g.length?`<div><b style="color:${QCOL[q]}">${QN[q]}</b> · ${esc(names(g))}<p class="note">${QAPP[q]}</p></div>`:""}).join("")}</div></div>`}</div>`;
+  h+=`<div class="sec">${H("Engagement assessment matrix")}${empty||`<p>C = current engagement, D = desired engagement. Shaded cells show the gap to close.</p><div class="tw"><table class="t seam"><thead><tr><th>Stakeholder</th>${LV.map(l=>`<th style="text-align:center">${l}</th>`).join("")}</tr></thead><tbody>${seamRows}</tbody></table></div>`+(gaps.length?`<div class="callout"><b>Biggest gap:</b> ${esc(gaps[0].name)}, from ${LV[gaps[0].cur].toLowerCase()} to ${LV[gaps[0].des].toLowerCase()}. ${gaps.length} of ${n} stakeholders need to move.</div>`:`<div class="callout">No gaps: every stakeholder is already at the engagement level needed. Focus on maintaining it.</div>`)}</div>`;
+  h+=`<div class="sec">${H("Engagement strategies")}${empty||`<div class="tw"><table class="t"><thead><tr><th style="width:20%">Stakeholder</th><th style="width:16%">Move</th><th>Actions</th></tr></thead><tbody>${[...s].sort((a,b)=>["High","Medium","Low"].indexOf(prio(a))-["High","Medium","Low"].indexOf(prio(b))).map(x=>`<tr><td class="b">${esc(x.name)}<br><span class="m ${prio(x)=="High"?"i":prio(x)=="Medium"?"pu":"pl"}">${prio(x)}</span></td><td>${LV[x.cur]} → ${LV[x.des]}<br><span class="note">${QN[quad(x)]}</span></td><td><ul>${strategy(x).map(a=>`<li>${esc(a)}</li>`).join("")}</ul></td></tr>`).join("")}</tbody></table></div>`}</div>`;
+  h+=inflHTML(H,empty);
+  h+=`<div class="sec">${H("Engagement timeline")}<div class="tw"><table class="t"><thead><tr><th style="width:16%">Phase</th><th style="width:26%">When</th><th>Key engagement actions</th></tr></thead><tbody>${phases().map(([ph,w,a])=>`<tr><td class="b">${ph}</td><td>${esc(w||"Set dates in step 1")}</td><td><ul>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></td></tr>`).join("")}</tbody></table></div></div>`;
+  h+=`<div class="sec">${H("Roles and responsibilities")}<ul><li><b>${esc(sp)} (sponsor):</b> visible champion of the project, owns relationships at executive level, resolves escalations beyond the project manager's authority.</li><li><b>${esc(pm)} (project manager):</b> owns this plan, keeps the stakeholder register current, runs reviews and reports changes in engagement.</li><li><b>Relationship owners:</b> keep regular contact with their assigned stakeholders and report concerns early.</li><li><b>Project team:</b> raise stakeholder concerns they hear, and support Q&amp;A and training.</li></ul></div>`;
+  h+=`<div class="sec">${H("Monitoring engagement")}<p>The engagement matrix is reassessed ${esc(S.c.review.toLowerCase())}. These signals show whether the plan is working:</p><div class="tw"><table class="t"><thead><tr><th>Signal</th><th>Healthy</th><th>Act now</th></tr></thead><tbody>
+   <tr><td class="b">Meeting attendance</td><td>Decision-makers attend and prepare</td><td>Delegates sent, repeated cancellations</td></tr>
+   <tr><td class="b">Response to updates</td><td>Replies, questions, actions taken</td><td>Silence, or the same questions again</td></tr>
+   <tr><td class="b">Questions asked</td><td>"How do I…?"</td><td>"Why are we doing this?"</td></tr>
+   <tr><td class="b">Behaviour</td><td>New way of working is used</td><td>Workarounds and side spreadsheets</td></tr>
+   <tr><td class="b">Feedback</td><td>Concerns raised early and openly</td><td>Complaints reach the sponsor first</td></tr></tbody></table></div>
+   <p>The plan is updated when a new stakeholder is identified, an engagement level changes, a major change request is approved, or the project enters a new phase.</p></div>`;
+  // PART B
+  k=0;
+  h+=`<div class="part">Part B</div><h2>Communication Management Plan</h2>`;
+  h+=`<div class="sec">${H("Objectives")}<ul><li>The right people get the right information, at the right time, in the format that works for them.</li><li>No stakeholder learns about a change that affects them from someone outside the project.</li><li>Decisions, risks and issues reach people who can act on them quickly.</li><li>Communication supports the engagement goals in Part A.</li></ul></div>`;
+  h+=`<div class="sec">${H("Communication methods")}<div class="tw"><table class="t"><thead><tr><th style="width:18%">Method</th><th>Use it for</th><th style="width:34%">Channels on this project</th></tr></thead><tbody>
+   <tr><td><span class="m i">Interactive</span></td><td>Decisions, concerns, bad news, resistance, anything that needs a two-way conversation.</td><td>${esc([tools().meet&&"meetings and video calls","one-to-ones","workshops"].filter(Boolean).join(", "))}</td></tr>
+   <tr><td><span class="m pu">Push</span></td><td>Status, announcements and notices to specific people. Sent is not the same as read, so follow up on anything important.</td><td>${esc([tools().email&&"email",tools().chat&&(S.c.chat||"team chat"),tools().video&&"recorded videos"].filter(Boolean).join(", ")||"notices")}</td></tr>
+   <tr><td><span class="m pl">Pull</span></td><td>Reference material for large audiences: FAQ, guides, plans, decisions log.</td><td>${esc(pullCh())}</td></tr></tbody></table></div></div>`;
+  h+=`<div class="sec">${H("Communication matrix")}${empty||`<div class="tw"><table class="t" style="min-width:860px"><thead><tr><th style="width:15%">What</th><th style="width:25%">Purpose and content</th><th style="width:19%">Audience</th><th style="width:15%">Method / channel</th><th style="width:14%">Frequency</th><th>Owner</th></tr></thead><tbody>${items.map(c=>`<tr><td class="b">${esc(c.what)}</td><td>${esc(c.purpose)}</td><td>${esc(c.aud)}</td><td><span class="m ${c.method}">${c.method=="i"?"Interactive":c.method=="pu"?"Push":"Pull"}</span><br>${esc(c.channel)}</td><td>${esc(c.freq)}</td><td>${esc(c.owner)}</td></tr>`).join("")}</tbody></table></div>`}</div>`;
+  h+=`<div class="sec">${H("Stakeholder preferences")}${empty||`<div class="tw"><table class="t"><thead><tr><th>Stakeholder</th><th>Prefers</th><th>Level of detail</th><th>Receives</th></tr></thead><tbody>${s.map(x=>{const q=quad(x);const rec=items.filter(c=>c.aud=="All stakeholders"||c.aud.split(", ").includes(x.name)).map(c=>c.what);return`<tr><td class="b">${esc(x.name)}</td><td>${esc(x.chan)}</td><td>${q=="mc"?"Detailed, with decisions needed":q=="ks"?"High-level summary":q=="ki"?"What changes for them, practical":"Headlines only"}</td><td>${esc(rec.join(", "))}</td></tr>`}).join("")}</tbody></table></div>`}${n>1?`<div class="callout"><b>${n} stakeholder groups = ${chan} possible communication channels</b> (n × (n − 1) ÷ 2). This plan keeps them manageable by routing most messages through a few regular, owned communications.</div>`:""}</div>`;
+  h+=`<div class="sec">${H("Meeting guidelines")}<ul><li>Agenda and any papers sent at least one working day before.</li><li>Every meeting has a named chair and note-taker, and starts and ends on time.</li><li>Decisions and actions (with owner and due date) are recorded and shared within one working day.</li><li>Decisions go into the decisions log on the project hub${S.c.hub?" ("+esc(S.c.hub)+")":""}.</li></ul></div>`;
+  h+=`<div class="sec">${H("Escalation path")}<div class="esc"><div><b>Level 1</b><span>Team member or stakeholder → ${esc(pm)}, within ${esc(S.c.e1)}. Anything that threatens a milestone, the budget, quality or a key relationship.</span></div><div><b>Level 2</b><span>${esc(pm)} → ${esc(sp)}, within ${esc(S.c.e2)}, when the issue is beyond the project manager's authority or tolerance.</span></div><div><b>Level 3</b><span>${esc(sp)} → steering group, at the next steering meeting or sooner if urgent. Decisions recorded in the decisions log.</span></div></div></div>`;
+  h+=`<div class="sec">${H("Status report template")}<ul><li><b>Overall status:</b> green, amber or red, with one line on why.</li><li><b>Progress:</b> done this period, planned next period.</li><li><b>Milestones:</b> upcoming dates, on track or at risk.</li><li><b>Top risks and issues:</b> what, impact, action, owner.</li><li><b>Decisions needed:</b> what, by whom, by when.</li><li><b>Engagement:</b> any stakeholder whose support has changed.</li></ul></div>`;
+  h+=`<div class="sec">${H("Managing and updating this plan")}<p>${esc(pm)} owns this plan and reviews it ${esc(S.c.review.toLowerCase())} with the stakeholder engagement plan. The project checks that communications are working through meeting attendance, replies and questions, feedback in one-to-ones, and the engagement signals in Part A. Changes to audiences, frequencies or channels are agreed with the sponsor and recorded in the version history.</p></div>`;
+  h+=`<div class="sec">${H("Approval")}<div class="sign"><div>Sponsor: ${esc(sp)}<br><br>Signature and date</div><div>Project manager: ${esc(pm)}<br><br>Signature and date</div></div></div>`;
+  $("#doc").innerHTML=h}
+
+// ---------- influencing and resistance (from people-skills practice) ----------
+const VALUES={"Sponsor / executive":"Results, reputation, no surprises, decisions framed with options",
+ "Manager":"Their team's performance and workload, being consulted before their people are",
+ "Project team":"Clear priorities, recognition, room to decide how to do the work",
+ "End users / staff":"Less hassle in their day, good training, being heard",
+ "Customers":"Service continuity and clear, early information",
+ "Supplier / partner":"Clear scope, prompt payment, a long-term relationship",
+ "Regulator / compliance":"Complete evidence, early notice, no last-minute surprises",
+ "Community / public":"Respect, advance notice and a named contact",
+ "Other":"Ask them directly what matters most"};
+const INFL=["Inform first, in their terms, before they hear it elsewhere. Ask for one small agreement (for example, attending the kickoff) to start a pattern of saying yes.",
+ "Listen before you persuade. Meet one to one, separate the person from the problem, and find the interest behind their position. Involve them in shaping one part of the solution; people support what they help create.",
+ "Show what's in it for them with evidence, and use peers who are already on board as proof. Offer something they value in exchange for their support.",
+ "Ask for visible commitment: a champion role, co-presenting at a demo, or reviewing materials for their group.",
+ "Keep them close and use their credibility to bring others along."];
+function influence(x){return{value:VALUES[x.cat]||VALUES.Other,how:INFL[Math.min(x.cur,4)]}}
+const inflList=()=>S.s.filter(x=>x.cur<=1||prio(x)=="High");
+const CONFLICT=[["Collaborate / problem-solve","Default when there is time and the relationship matters. Open discussion of interests to find a solution that works for both sides."],
+ ["Compromise","When time is short and both sides have similar power. Each side gives something up; treat it as temporary."],
+ ["Accommodate / smooth","When the issue matters more to them than to the project, or to keep goodwill for a bigger decision."],
+ ["Force / direct","Only for safety, legal or deadline-critical issues, using the sponsor's authority. Explain why afterwards."],
+ ["Withdraw / avoid","Short cooling-off time when emotions are high or the issue is trivial. Set a date to come back to it."]];
+function inflHTML(H,empty){const L=inflList();
+  return `<div class="sec">${H("Influencing and handling resistance")}${empty||(L.length?`<p>Stakeholders who are unaware or resistant today, or who are high priority. Most will not report to the project, so influence comes from understanding what they value, not from authority.</p><div class="tw"><table class="t"><thead><tr><th style="width:20%">Stakeholder</th><th style="width:28%">What they value</th><th>How to influence them</th></tr></thead><tbody>${L.map(x=>{const f=influence(x);return`<tr><td class="b">${esc(x.name)}<br><span class="note">${LV[x.cur]} → ${LV[x.des]}</span></td><td>${esc(f.value)}</td><td>${esc(f.how)}</td></tr>`}).join("")}</tbody></table></div>`:`<p>No stakeholder is unaware, resistant or high priority right now.</p>`)+`<p style="margin-top:6px"><b>If disagreement turns into conflict:</b> deal with it early, privately and directly with the people involved, focus on the issue rather than the person, and escalate only after trying to resolve it together.</p><div class="tw"><table class="t"><thead><tr><th style="width:26%">Approach</th><th>When to use it</th></tr></thead><tbody>${CONFLICT.map(c=>`<tr><td class="b">${c[0]}</td><td>${c[1]}</td></tr>`).join("")}</tbody></table></div>`}</div>`}
+
+// ---------- PDF ----------
+const PDFC={"--accent":"#0b7a72","--accent-soft":"#d8efec","--accent-ink":"#06574f","--push":"#3b4f99","--ok":"#2d7a3e","--muted":"#4f6472","--sunk":"#e6ecef","--surface":"#ffffff","--fg":"#0f2433"};
+const PC={ink:"#0f2433",muted:"#4f6472",line:"#d6dfe5",navy:"#0e2a3b",accent:"#0b7a72",soft:"#d8efec",zebra:"#f4f7f8"};
+let pdfLib=null;
+function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=()=>no(new Error("load"));document.head.appendChild(s)})}
+async function getPdfMake(){if(window.pdfMake&&window.pdfMake.vfs)return window.pdfMake;
+  if(!pdfLib)pdfLib=loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js").then(()=>loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/vfs_fonts.min.js")).then(()=>window.pdfMake);
+  return pdfLib}
+function pdfGrid(){return gridSVG(true).replace(/ →/g,"").replace(/var\((--[a-z-]+)\)/g,(m,k)=>PDFC[k]||"#4f6472").replace(/<svg /,'<svg width="420" height="340" ')}
+function buildPdf(){const p=S.p,s=S.s,name=p.name||"Untitled project",pm=p.pm||"Project manager",sp=p.sponsor||"Sponsor",today=fmtD(iso(new Date()));
+  const n=s.length,items=commItems(),gaps=s.filter(x=>x.des>x.cur).sort((a,b)=>(b.des-b.cur)-(a.des-a.cur));
+  let k=0;const H=t=>({text:[{text:(++k)+".  ",color:PC.accent},t],style:"h3",headlineLevel:1});
+  const th=t=>({text:t.toUpperCase(),style:"th"});
+  const T=(head,rows,widths,opt={})=>({table:{headerRows:1,widths,dontBreakRows:true,body:[head.map(th),...rows]},layout:{hLineWidth:(i)=>i===0?0:.5,vLineWidth:()=>0,hLineColor:()=>PC.line,fillColor:(r)=>r===0?PC.navy:(r%2===0?PC.zebra:null),paddingTop:()=>5,paddingBottom:()=>5,paddingLeft:()=>6,paddingRight:()=>6},margin:[0,4,0,8],...opt});
+  const B=t=>({text:t,bold:true});
+  const ul=a=>({ul:a,margin:[0,2,0,6]});
+  const callout=t=>({table:{widths:["*"],body:[[{text:t,margin:[8,6,8,6]}]]},layout:{hLineWidth:()=>0,vLineWidth:(i)=>i===0?3:0,vLineColor:()=>PC.accent,fillColor:()=>PC.soft},margin:[0,4,0,8]});
+  const noS=n?null:{text:"Add stakeholders in step 2 to fill in this section.",italics:true,color:PC.muted};
+  const c=[];
+  // cover
+  c.push({text:"PROJECT MANAGEMENT PLAN · SUBSIDIARY PLANS",style:"eyebrow"},{text:name,style:"title"},{text:"Stakeholder Engagement Plan and Communication Management Plan",color:PC.muted,margin:[0,0,0,12]});
+  const meta=[["Organization",p.org||"–"],["Sponsor",sp],["Prepared by",pm],["Version","1.0 · "+today]];if(p.start)meta.push(["Start",fmtD(p.start)]);if(p.end)meta.push(["Go-live / end",fmtD(p.end)]);
+  c.push({table:{widths:["*","*","*"],body:(()=>{const r=[];for(let i=0;i<meta.length;i+=3){const row=meta.slice(i,i+3).map(m=>({stack:[{text:m[0].toUpperCase(),style:"lab"},{text:m[1]}]}));while(row.length<3)row.push({text:""});r.push(row)}return r})()},layout:"noBorders",margin:[0,0,0,10]});
+  c.push({canvas:[{type:"line",x1:0,y1:0,x2:515,y2:0,lineWidth:2,lineColor:PC.ink}],margin:[0,0,0,14]});
+  // PART A
+  c.push({text:"PART A",style:"part"},{text:"Stakeholder Engagement Plan",style:"h2"});
+  c.push(H("Purpose"),{text:p.goal||"Describe what the project changes and why.",margin:[0,0,0,4]},{text:`This plan sets out who is affected by ${name} or can influence it, how engaged each group is today, the level of engagement the project needs, and the actions that will close the gap. It is reviewed ${S.c.review.toLowerCase()} and whenever a new stakeholder appears or an engagement level changes.`,margin:[0,0,0,8]});
+  c.push(H("Stakeholder register"),noS||T(["#","Stakeholder","Group","Power","Interest","Approach","Priority","Owner"],s.map((x,i)=>[String(i+1),B(x.name),x.cat,x.pow+"/5",x.int+"/5",QN[quad(x)],prio(x),x.owner||pm]),[14,"*",70,32,38,62,40,60]));
+  c.push(H("Power / interest map"));
+  if(noS)c.push(noS);else{c.push({unbreakable:true,columns:[{svg:pdfGrid(),width:250},{width:"*",stack:["mc","ks","ki","mo"].filter(q=>s.some(x=>quad(x)==q)).map(q=>({stack:[{text:[{text:QN[q],bold:true,color:PDFC[QCOL[q].slice(4,-1)]||PC.ink},"  ·  "+names(s.filter(x=>quad(x)==q))]},{text:QAPP[q],color:PC.muted,fontSize:8.5,margin:[0,2,0,8]}]}))}],columnGap:14,margin:[0,4,0,6]});
+    c.push({text:"Numbers on the map match the stakeholder register.",fontSize:8,color:PC.muted,margin:[0,0,0,8]})}
+  c.push(H("Engagement assessment matrix"));
+  if(noS)c.push(noS);else{c.push({text:"C = current engagement, D = desired engagement. Shaded cells show the gap to close.",margin:[0,0,0,2]});
+    c.push(T(["Stakeholder",...LV],s.map(x=>[B(x.name),...LV.map((_,l)=>{const inGap=l>Math.min(x.cur,x.des)&&l<Math.max(x.cur,x.des);const cc=l==x.cur,d=l==x.des;const t=[cc&&"C",d&&"D"].filter(Boolean).join("  ");return{text:t,alignment:"center",bold:true,color:d&&!cc?PC.accent:PC.ink,fillColor:(inGap||d&&!cc)?PC.soft:undefined}})]),["*",56,56,56,56,56]));
+    c.push(callout(gaps.length?`Biggest gap: ${gaps[0].name}, from ${LV[gaps[0].cur].toLowerCase()} to ${LV[gaps[0].des].toLowerCase()}. ${gaps.length} of ${n} stakeholders need to move.`:"No gaps: every stakeholder is already at the engagement level needed."))}
+  c.push(H("Engagement strategies"),noS||T(["Stakeholder","Move","Actions"],[...s].sort((a,b)=>["High","Medium","Low"].indexOf(prio(a))-["High","Medium","Low"].indexOf(prio(b))).map(x=>[{stack:[B(x.name),{text:prio(x)+" priority",color:PC.accent,fontSize:8}]},{stack:[LV[x.cur]+" → "+LV[x.des],{text:QN[quad(x)],color:PC.muted,fontSize:8}]},{ul:strategy(x)}]),[100,80,"*"]));
+  const L=inflList();
+  c.push(H("Influencing and handling resistance"));
+  if(noS)c.push(noS);else{c.push(L.length?T(["Stakeholder","What they value","How to influence them"],L.map(x=>{const f=influence(x);return[{stack:[B(x.name),{text:LV[x.cur]+" → "+LV[x.des],color:PC.muted,fontSize:8}]},f.value,f.how]}),[95,140,"*"]):{text:"No stakeholder is unaware, resistant or high priority right now.",margin:[0,0,0,6]});
+    c.push({text:[B("If disagreement turns into conflict: "),"deal with it early, privately and directly with the people involved, focus on the issue rather than the person, and escalate only after trying to resolve it together."],margin:[0,2,0,4]});
+    c.push(T(["Approach","When to use it"],CONFLICT.map(r=>[B(r[0]),r[1]]),[140,"*"]))}
+  c.push(H("Engagement timeline"),T(["Phase","When","Key engagement actions"],phases().map(([ph,w,a])=>[B(ph),w||"Set dates in step 1",{ul:a}]),[70,130,"*"]));
+  c.push(H("Roles and responsibilities"),ul([{text:[B(sp+" (sponsor): "),"visible champion of the project, owns relationships at executive level, resolves escalations beyond the project manager's authority."]},{text:[B(pm+" (project manager): "),"owns this plan, keeps the stakeholder register current, runs reviews and reports changes in engagement."]},{text:[B("Relationship owners: "),"keep regular contact with their assigned stakeholders and report concerns early."]},{text:[B("Project team: "),"raise stakeholder concerns they hear, and support Q&A and training."]}]));
+  c.push(H("Monitoring engagement"),{text:`The engagement matrix is reassessed ${S.c.review.toLowerCase()}. These signals show whether the plan is working:`},
+    T(["Signal","Healthy","Act now"],[[B("Meeting attendance"),"Decision-makers attend and prepare","Delegates sent, repeated cancellations"],[B("Response to updates"),"Replies, questions, actions taken","Silence, or the same questions again"],[B("Questions asked"),"“How do I…?”","“Why are we doing this?”"],[B("Behaviour"),"New way of working is used","Workarounds and side spreadsheets"],[B("Feedback"),"Concerns raised early and openly","Complaints reach the sponsor first"]],[110,"*","*"]));
+  // PART B
+  k=0;c.push({text:"PART B",style:"part",pageBreak:"before"},{text:"Communication Management Plan",style:"h2"});
+  c.push(H("Objectives"),ul(["The right people get the right information, at the right time, in the format that works for them.","No stakeholder learns about a change that affects them from someone outside the project.","Decisions, risks and issues reach people who can act on them quickly.","Communication supports the engagement goals in Part A."]));
+  const t=tools();
+  c.push(H("Communication methods"),T(["Method","Use it for","Channels on this project"],[[B("Interactive"),"Decisions, concerns, bad news, resistance, anything that needs a two-way conversation.",[t.meet&&"meetings and video calls","one-to-ones","workshops"].filter(Boolean).join(", ")],[B("Push"),"Status, announcements and notices to specific people. Sent is not the same as read, so follow up on anything important.",[t.email&&"email",t.chat&&(S.c.chat||"team chat"),t.video&&"recorded videos"].filter(Boolean).join(", ")||"notices"],[B("Pull"),"Reference material for large audiences: FAQ, guides, plans, decisions log.",pullCh()]],[70,"*",150]));
+  const ML={i:"Interactive",pu:"Push",pl:"Pull"};
+  c.push(H("Communication matrix"),noS||T(["What","Purpose and content","Audience","Method / channel","Frequency","Owner"],items.map(x=>[B(x.what),x.purpose,x.aud,{stack:[{text:ML[x.method],bold:true,color:PC.accent,fontSize:7.5},x.channel]},x.freq,x.owner]),[62,"*",80,66,62,52],{fontSize:8}));
+  c.push(H("Stakeholder preferences"),noS||T(["Stakeholder","Prefers","Level of detail","Receives"],s.map(x=>{const q=quad(x);const rec=items.filter(cc=>cc.aud=="All stakeholders"||cc.aud.split(", ").includes(x.name)).map(cc=>cc.what);return[B(x.name),x.chan,q=="mc"?"Detailed, with decisions needed":q=="ks"?"High-level summary":q=="ki"?"What changes for them, practical":"Headlines only",rec.join(", ")]}),[90,60,100,"*"]));
+  if(n>1)c.push(callout(`${n} stakeholder groups = ${n*(n-1)/2} possible communication channels (n × (n − 1) ÷ 2). This plan keeps them manageable by routing most messages through a few regular, owned communications.`));
+  c.push(H("Meeting guidelines"),ul(["Agenda and any papers sent at least one working day before.","Every meeting has a named chair and note-taker, and starts and ends on time.","Decisions and actions (with owner and due date) are recorded and shared within one working day.","Decisions go into the decisions log on the project hub"+(S.c.hub?" ("+S.c.hub+")":"")+"."]));
+  c.push(H("Escalation path"),T(["Level","Route and timing"],[[B("Level 1"),`Team member or stakeholder → ${pm}, within ${S.c.e1}. Anything that threatens a milestone, the budget, quality or a key relationship.`],[B("Level 2"),`${pm} → ${sp}, within ${S.c.e2}, when the issue is beyond the project manager's authority or tolerance.`],[B("Level 3"),`${sp} → steering group, at the next steering meeting or sooner if urgent. Decisions recorded in the decisions log.`]],[60,"*"]));
+  c.push(H("Status report template"),ul([{text:[B("Overall status: "),"green, amber or red, with one line on why."]},{text:[B("Progress: "),"done this period, planned next period."]},{text:[B("Milestones: "),"upcoming dates, on track or at risk."]},{text:[B("Top risks and issues: "),"what, impact, action, owner."]},{text:[B("Decisions needed: "),"what, by whom, by when."]},{text:[B("Engagement: "),"any stakeholder whose support has changed."]}]));
+  c.push(H("Managing and updating this plan"),{text:`${pm} owns this plan and reviews it ${S.c.review.toLowerCase()} with the stakeholder engagement plan. The project checks that communications are working through meeting attendance, replies and questions, feedback in one-to-ones, and the engagement signals in Part A. Changes to audiences, frequencies or channels are agreed with the sponsor and recorded in the version history.`,margin:[0,0,0,8]});
+  c.push({stack:[H("Approval"),{columns:[{stack:[{canvas:[{type:"line",x1:0,y1:30,x2:220,y2:30,lineWidth:.8,lineColor:PC.ink}]},{text:"Sponsor: "+sp,margin:[0,4,0,0]},{text:"Signature and date",color:PC.muted,fontSize:8}]},{stack:[{canvas:[{type:"line",x1:0,y1:30,x2:220,y2:30,lineWidth:.8,lineColor:PC.ink}]},{text:"Project manager: "+pm,margin:[0,4,0,0]},{text:"Signature and date",color:PC.muted,fontSize:8}]}],columnGap:40}],unbreakable:true});
+  const fix=o=>{if(Array.isArray(o)){for(let i=0;i<o.length;i++)o[i]=typeof o[i]==="string"?o[i].replace(/→/g,"to"):fix(o[i]);return o}
+    if(o&&typeof o==="object"){for(const key in o){if(key==="svg")continue;const v=o[key];if(typeof v==="string")o[key]=v.replace(/→/g,"to");else if(typeof v==="object")fix(v)}}return o};
+  fix(c);
+  // keep each heading with what follows it
+  const out=[];for(let i=0;i<c.length;i++){const h=c[i],nx=c[i+1];
+    if(h&&h.headlineLevel&&nx&&nx.table&&nx.table.body.length>1){const cols=nx.table.body[0].length;const hc={...h,colSpan:cols,border:[false,false,false,false],margin:[-6,6,0,0]};delete hc.headlineLevel;
+      nx.table.body.unshift([hc,...Array(cols-1).fill({text:""})]);nx.table.headerRows=2;nx.table.keepWithHeaderRows=1;
+      const L=nx.layout;nx.layout={...L,fillColor:(r)=>r===0?null:r===1?PC.navy:(r%2===1?PC.zebra:null),hLineWidth:(r)=>r<=1?0:.5};nx.margin=[0,0,0,8];out.push(nx);i++;continue}
+    if(h&&h.headlineLevel&&nx){out.push({stack:[h,nx],unbreakable:true});i++;continue}
+    out.push(h)}
+  c.length=0;c.push(...out);
+  return{pageSize:"A4",pageMargins:[40,44,40,48],info:{title:name+" – Stakeholder and communication plans"},
+    content:c,
+    footer:(cur,tot)=>({columns:[{text:name+" · Stakeholder and communication plans",color:PC.muted},{text:cur+" / "+tot,alignment:"right",color:PC.muted}],margin:[40,14,40,0],fontSize:7.5}),
+    defaultStyle:{font:"Roboto",fontSize:9.2,lineHeight:1.25,color:PC.ink},
+    styles:{eyebrow:{fontSize:8,bold:true,color:PC.accent,characterSpacing:1.2,margin:[0,0,0,4]},title:{fontSize:24,bold:true,margin:[0,0,0,4]},
+      part:{fontSize:8,bold:true,color:PC.accent,characterSpacing:1.5,margin:[0,10,0,2]},h2:{fontSize:17,bold:true,margin:[0,0,0,8]},
+      h3:{fontSize:11.5,bold:true,margin:[0,10,0,4]},th:{bold:true,color:"#ffffff",fontSize:7.2,characterSpacing:.5},lab:{fontSize:7,bold:true,color:PC.muted,characterSpacing:.6}}}}
+let dlNs;const dlReady=(window.claude&&window.claude.use)?window.claude.use("downloads").then(d=>dlNs=d).catch(()=>dlNs=null):Promise.resolve(null);
+async function downloadPdf(btn){btn.disabled=true;const label=btn.textContent;btn.textContent="Preparing PDF…";
+  try{const pm=await getPdfMake();const dd=buildPdf();const fname=((S.p.name||"Project")+" - Stakeholder and communication plans.pdf").replace(/[\\/:*?"<>|]+/g," ");
+    const blob=await new Promise((ok,no)=>{try{pm.createPdf(dd).getBlob(ok)}catch(e){no(e)}});
+    await dlReady;
+    if(dlNs){try{await dlNs.save({filename:fname,data:blob});toast("PDF saved")}catch(e){const c=e&&e.code;toast(c==="declined"?"Download cancelled":c==="rate_limited"?"A download is already waiting for you to confirm":c==="host_unavailable"?"This app can't save files. Open the tool in a browser.":"PDF download isn't available here. Use Copy for Word instead.")}}
+    else if(!window.claude){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast("PDF downloaded")}
+    else toast("PDF download isn't available in this view. Use Copy for Word instead.")}
+  catch(e){toast("Couldn't build the PDF. Check your connection and try again.")}
+  finally{btn.disabled=false;btn.textContent=label}}
+
+// ---------- routing ----------
+const VIEWS=["project","people","rhythm","plan"];
+function route(){const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):"project";
+  VIEWS.forEach(x=>$("#v-"+x).hidden=x!=v);$$("nav.steps a").forEach(a=>a.setAttribute("aria-current",a.dataset.v==v));
+  if(v=="people"){drawCards();drawSuggest();drawMini()}if(v=="plan")drawDoc();scrollTo({top:0})}
+addEventListener("hashchange",route);
+
+// ---------- events ----------
+document.addEventListener("input",e=>{const el=e.target;
+  if(el.dataset.p){S.p[el.dataset.p]=el.value;save();if(el.dataset.p=="type")drawSuggest();return}
+  if(el.dataset.c){S.c[el.dataset.c]=el.value;save();return}
+  if(el.dataset.tool){S.c.tools[el.dataset.tool]=el.checked;save();return}
+  const card=el.closest(".scard");if(card&&el.dataset.k){const x=S.s.find(y=>y.id==card.dataset.id);if(!x)return;const k=el.dataset.k;
+    x[k]=["pow","int","cur","des"].includes(k)?+el.value:el.value;save();
+    if(["pow","int","cur","des"].includes(k)){const i=S.s.indexOf(x);const q=quad(x),pr=prio(x);card.style.setProperty("--q",QCOL[q]);
+      card.querySelector(".chips").innerHTML=`<span class="chip ${q}">${QN[q]}</span><span class="chip ${pr=="High"?"hi":pr=="Medium"?"me":""}">${pr} priority</span><span class="chip">${LV[x.cur]} → ${LV[x.des]}</span>`;
+      const v=el.parentElement.querySelector(".v b");if(v)v.textContent=el.value;drawMini()}
+    if(k=="name")drawSuggest()}});
+document.addEventListener("change",e=>{if(e.target.dataset.k=="cat"||e.target.dataset.k=="chan"){}});
+document.addEventListener("click",e=>{const t=e.target;
+  const sg=t.closest("[data-sug]");if(sg){const r=(TYPES[S.p.type]||TYPES.other).s[+sg.dataset.sug];S.s.push({id:uid++,name:r[1],cat:r[0],pow:r[2],int:r[3],cur:r[4],des:r[5],concern:"",chan:r[0]=="Customers"||r[0]=="Regulator / compliance"?"Email":r[0]=="Project team"?"Team chat":"Meetings",owner:""});save();drawCards();drawSuggest();drawMini();return}
+  if(t.id=="addBlank"){S.s.push({id:uid++,name:"",cat:"Other",pow:3,int:3,cur:2,des:3,concern:"",chan:"Email",owner:""});save();drawCards();drawMini();const el=$("#n-"+(uid-1));if(el)el.focus();return}
+  const d=t.closest("[data-del]");if(d){S.s=S.s.filter(x=>x.id!=d.dataset.del);save();drawCards();drawSuggest();drawMini();return}
+  if(t.id=="loadEx"){S=exampleState();save();fillProject();toast("Example loaded");return}
+  if(t.id=="askClear"){$("#resetRow").innerHTML=`<div class="confirm">Clear everything and start blank?<button class="btn danger" id="doClear">Clear</button><button class="btn" id="noClear">Cancel</button></div>`;return}
+  if(t.id=="noClear"||t.id=="doClear"){if(t.id=="doClear"){S=blankState();save();fillProject();toast("Cleared. Start with your project name.")}
+    $("#resetRow").innerHTML=`<button class="btn" id="loadEx">Load example</button><button class="btn ghost danger" id="askClear">Start blank</button>`;return}
+  if(t.id=="copyRich"){drawDoc();const html=`<div style="font-family:Calibri,Arial,sans-serif">${$("#doc").innerHTML.replace(/<svg[\s\S]*?<\/svg>/g,"")}</div>`,txt=$("#doc").innerText;
+    const fall=()=>navigator.clipboard.writeText(txt).then(()=>toast("Copied as text (formatting not supported here)"),selectDoc);
+    try{if(window.ClipboardItem&&navigator.clipboard.write){navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([txt],{type:"text/plain"})})]).then(()=>toast("Copied. Paste into Word or Google Docs"),fall)}else fall()}catch(err){fall()}return}
+  if(t.id=="dlPdf"){downloadPdf(t);return}
+  if(t.id=="copyText"){drawDoc();try{navigator.clipboard.writeText($("#doc").innerText).then(()=>toast("Copied as plain text"),selectDoc)}catch(err){selectDoc()}return}
+});
+function selectDoc(){const r=document.createRange();r.selectNodeContents($("#doc"));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);toast("Copying isn't allowed here. The plan is selected: press Ctrl/Cmd + C")}
+
+fillProject();route();
+</script>
+
+</body>
+</html>
